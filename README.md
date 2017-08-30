@@ -3,20 +3,10 @@ Providing a padded version of OpenCV's `warpAffine()` and `warpPerspective()` fu
 
 ![Example image](example.png "Example output")
 
-## usage
-    import padtransf
-    src_warped, dst_padded = padtransf.warpPerspectivePadded(src, dst, homography)
-    src_warped, dst_padded = padtransf.warpAffinePadded(src, dst, affine_transf)
-    
-## files
-    test/         contains test images and ground truth homographies; from Oxford's VGG
-    .gitignore    self-explanatory
-    LICENSE       MIT License statement
-    README.md     this file
-    example.png   an example image showing the padding extent
-    example.py    an example script to show usage and compare with standard OpenCV functions
-    padTransf.py  the python module containing the two padded warping functions
-    
+A completed Python implementation is available [here](https://github.com/alkasm/padded-transformations).
+
+This C++ library is currently in active development and not fully working.
+
 ## functions
 
 Read [my Stack Overflow answer](https://stackoverflow.com/questions/44457064/displaying-stitched-images-together-without-cutoff-using-warpaffine/44459869#44459869) which inspired this repository.
@@ -28,11 +18,11 @@ The solution requires three steps:
 2. Add translation to the transformation by however much is necessary in pixels to send all pixels values to positive numbers
 3. Pad the destination image to account for the shift and add padding to the edge of the warp
 
-Both `warpAffinePadded` and `warpPerspectivePadded` complete this task using minimal overhead and no user input aside from the same information that would be needed for OpenCV's `warpAffine()` and `warpPerspective()`.
+Both `warpAffinePadded()` and `warpPerspectivePadded()` complete this task using minimal overhead and no user input aside from the same information that would be needed for OpenCV's `warpAffine()` and `warpPerspective()`.
 
 ## contribute
 
-Please feel free to submit any suggestions you have or bugs you find via a GitHub issue. Ports to C++ would be lovely if anyone is bored.
+Please feel free to submit any suggestions you have or bugs you find via a GitHub issue.
 
 ## test dataset
 
