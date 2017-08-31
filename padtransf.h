@@ -3,28 +3,27 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
-using namespace cv;
 
 void warpPerspectivePadded(
-    Mat, // source image, to be warped
-    Mat, // destination image, to be padded
-    Mat, // 3x3 perspective transformation
-    Mat, // warped source image
-    Mat, // padded destination image
-    int flags=INTER_LINEAR,             // flags for copyMakeBorder & warpPerspective
-    int borderMode=BORDER_CONSTANT,     // mode for copyMakeBorder & warpPerspective
-    const Scalar& borderValue=Scalar()  // if border_constant for copyMakeBorder & warpPerspective
+    const cv::Mat&, // source image, to be warped
+    const cv::Mat&, // destination image, to be padded
+    const cv::Mat&, // 3x3 perspective transformation
+    cv::Mat&, // warped source image
+    cv::Mat&, // padded destination image
+    int flags=cv::INTER_LINEAR,             // flags for copyMakeBorder & warpPerspective
+    int borderMode=cv::BORDER_CONSTANT,     // mode for copyMakeBorder & warpPerspective
+    const cv::Scalar& borderValue=cv::Scalar()  // if border_constant for copyMakeBorder & warpPerspective
 );
 
 void warpAffinePadded(
-    Mat, // source image, to be warped
-    Mat, // destination image, to be padded
-    Mat, // 3x3 perspective transformation
-    Mat, // warped source image
-    Mat, // padded destination image
-    int flags=INTER_LINEAR,             // flags for copyMakeBorder & warpPerspective
-    int borderMode=BORDER_CONSTANT,     // mode for copyMakeBorder & warpPerspective
-    const Scalar& borderValue=Scalar()  // if border_constant for copyMakeBorder & warpPerspective
+    const cv::Mat&, // source image, to be warped
+    const cv::Mat&, // destination image, to be padded
+    const cv::Mat&, // 2x3 affine transformation
+    cv::Mat&, // warped source image
+    cv::Mat&, // padded destination image
+    int flags=cv::INTER_LINEAR,             // flags for copyMakeBorder & warpPerspective
+    int borderMode=cv::BORDER_CONSTANT,     // mode for copyMakeBorder & warpPerspective
+    const cv::Scalar& borderValue=cv::Scalar()  // if border_constant for copyMakeBorder & warpPerspective
 );
 
 #endif

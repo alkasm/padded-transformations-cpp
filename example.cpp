@@ -20,26 +20,34 @@ int main() {
     transfFile.open("test/H1to3p");
     float x;
     while (transfFile >> x) {
-        transf.push_back(x);
+        transf.push_back(x*2);
     }
     transfFile.close();
     transf = transf.reshape(1, 3);
 
-    float angle = 45;
-    float data[2][3] = {{cos(angle), sin(angle), 0}, {-sin(angle), cos(angle), 0}};
-    Mat affineTransf(2, 3, CV_32F, &data);
+    // standard warpPerspective
+    Mat crop_warped;
+    warpPerspective(src, crop_warped, transf, crop_warped.size(), WARP_INVERSE_MAP);
 
-    // display cropped warp
+    // blending parameters for display
     float alpha = 0.5;
     float beta = 1 - alpha;
     float gamma = 1.0;
 
+    // display cropped warp
+    Mat blended;
+    addWeighted(crop_warped, alpha, dst, beta, gamma, blended);
+    imshow("Blended warp, standard crop", blended);
+    waitKey();
+
+    // new warpPerspectivePadded
     Mat src_warped, dst_padded;
-    warpPerspectivePadded(src, dst, transf, src_warped, dst_padded,
-        WARP_INVERSE_MAP, BORDER_REFLECT_101);
-    Mat blended_persp;
-    addWeighted(src_warped, alpha, dst_padded, beta, gamma, blended_persp);
-    imshow("Blended warp, standard crop", blended_persp);
+    warpPerspectivePadded(src, dst, transf, src_warped, dst_padded, WARP_INVERSE_MAP);
+
+    // display padded warp
+    Mat blended_padded;
+    addWeighted(src_warped, alpha, dst_padded, beta, gamma, blended_padded);
+    imshow("Blended warp, padded crop", blended_padded);
     waitKey();
 
     destroyAllWindows();

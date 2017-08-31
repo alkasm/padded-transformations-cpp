@@ -3,16 +3,18 @@
 using namespace cv;
 using namespace std;
 
-void warpPerspectivePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padded,
-    int flags, int borderMode, const Scalar& borderValue)
+void warpPerspectivePadded(
+    const Mat& src, const Mat& dst, const Mat& M, // input matrices
+    Mat& src_warped, Mat& dst_padded, // output matrices
+    int flags, const int borderMode, const Scalar& borderValue) // OpenCV params
 {
     
-    M /= M.at<float>(2, 2);  // ensure a legal homography
+    Mat transf = M/M.at<float>(2, 2); // ensure a legal homography
     if (flags == WARP_INVERSE_MAP || 
         flags == INTER_LINEAR + WARP_INVERSE_MAP || 
         flags == INTER_NEAREST + WARP_INVERSE_MAP)
     {
-        invert(M, M);
+        invert(transf, transf);
         flags -= WARP_INVERSE_MAP;
     }
 
@@ -25,7 +27,7 @@ void warpPerspectivePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padd
     init_pts[1] = Point2f (src_w, 0);
     init_pts[2] = Point2f (src_w, src_h);
     init_pts[3] = Point2f (0, src_h);
-    perspectiveTransform(init_pts, transf_pts, M);
+    perspectiveTransform(init_pts, transf_pts, transf);
 
     // find min and max points
     int min_x, min_y, max_x, max_y;
@@ -41,7 +43,7 @@ void warpPerspectivePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padd
     max_y = ceil(max(
         max(transf_pts[0].y, transf_pts[1].y),
         max(transf_pts[2].y, transf_pts[3].y)));
-
+ 
     // add translation to the transformation matrix to shift to positive values
     int anchor_x, anchor_y = 0;
     Mat transl_transf = Mat::eye(3, 3, CV_32F);
@@ -55,9 +57,8 @@ void warpPerspectivePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padd
         anchor_y = -min_y;
         transl_transf.at<float>(1,2) += anchor_y;
     }
-    Mat shifted_transf(3, 3, CV_32F);
-    shifted_transf = transl_transf * M;
-    shifted_transf /= shifted_transf.at<float>(2, 2);
+    transf = transl_transf * transf;
+    transf /= transf.at<float>(2, 2);
 
     // create padded destination image
     int dst_h = dst.rows;
@@ -71,13 +72,16 @@ void warpPerspectivePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padd
     // transform src into larger window
     int dst_pad_h = dst_padded.rows;
     int dst_pad_w = dst_padded.cols;
-    warpPerspective(src, src_warped, shifted_transf, Size (dst_pad_w, dst_pad_h), flags, borderMode, borderValue);
+    warpPerspective(src, src_warped, transf, Size (dst_pad_w, dst_pad_h), flags, borderMode, borderValue);
 }
 
-void warpAffinePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padded,
-    int flags, int borderMode, const Scalar& borderValue)
+void warpAffinePadded(
+    const Mat& src, const Mat& dst, const Mat& M, // input matrices
+    Mat& src_warped, Mat& dst_padded, // output matrices
+    int flags, const int borderMode, const Scalar& borderValue) // OpenCV params
 {
 
+    Mat transf(M); //copy M
     if (flags == WARP_INVERSE_MAP || 
         flags == INTER_LINEAR + WARP_INVERSE_MAP || 
         flags == INTER_NEAREST + WARP_INVERSE_MAP)
@@ -85,7 +89,6 @@ void warpAffinePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padded,
         invertAffineTransform(M, M);
         flags -= WARP_INVERSE_MAP;
     }
-
 
     // it is enough to find where the corners of the image go to find
     // the padding bounds; points in clockwise order from origin
@@ -123,10 +126,8 @@ void warpAffinePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padded,
     {
         anchor_y = -min_y;
     }
-    Mat shifted_transf(2, 3, CV_32F);
-    M.copyTo(shifted_transf);
-    shifted_transf.at<float>(0, 2) += anchor_x;
-    shifted_transf.at<float>(1, 2) += anchor_y;
+    transf.at<float>(0, 2) += anchor_x;
+    transf.at<float>(1, 2) += anchor_y;
 
     // create padded destination image
     int dst_h = dst.rows;
@@ -140,5 +141,5 @@ void warpAffinePadded(Mat src, Mat dst, Mat M, Mat src_warped, Mat dst_padded,
     // transform src into larger window
     int dst_pad_h = dst_padded.rows;
     int dst_pad_w = dst_padded.cols;
-    warpAffine(src, src_warped, shifted_transf, Size (dst_pad_w, dst_pad_h), flags, borderMode, borderValue);
+    warpAffine(src, src_warped, transf, Size (dst_pad_w, dst_pad_h), flags, borderMode, borderValue);
 }
