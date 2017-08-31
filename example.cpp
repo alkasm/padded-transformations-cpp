@@ -27,7 +27,8 @@ int main() {
 
     // standard warpPerspective
     Mat crop_warped;
-    warpPerspective(src, crop_warped, transf, crop_warped.size(), WARP_INVERSE_MAP);
+    warpPerspective(src, crop_warped, transf, crop_warped.size(),
+                    WARP_INVERSE_MAP);
 
     // blending parameters for display
     float alpha = 0.5;
@@ -42,11 +43,13 @@ int main() {
 
     // new warpPerspectivePadded
     Mat src_warped, dst_padded;
-    warpPerspectivePadded(src, dst, transf, src_warped, dst_padded, WARP_INVERSE_MAP);
+    warpPerspectivePadded(src, dst, transf, src_warped, dst_padded,
+                          WARP_INVERSE_MAP);
 
     // display padded warp
     Mat blended_padded;
-    addWeighted(src_warped, alpha, dst_padded, beta, gamma, blended_padded);
+    addWeighted(src_warped, alpha, dst_padded, beta, gamma,
+                blended_padded);
     imshow("Blended warp, padded crop", blended_padded);
     waitKey();
 

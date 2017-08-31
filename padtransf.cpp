@@ -44,7 +44,7 @@ void warpPerspectivePadded(
         max(transf_pts[0].y, transf_pts[1].y),
         max(transf_pts[2].y, transf_pts[3].y)));
  
-    // add translation to the transformation matrix to shift to positive values
+    // add translation to transformation matrix to shift to positive values
     int anchor_x, anchor_y = 0;
     Mat transl_transf = Mat::eye(3, 3, CV_32F);
     if (min_x < 0)
@@ -67,18 +67,20 @@ void warpPerspectivePadded(
     int pad_bot = max(max_y, dst_h) - dst_h;
     int pad_left = anchor_x;
     int pad_right = max(max_x, dst_w) - dst_w;
-    copyMakeBorder(dst, dst_padded, pad_top, pad_bot, pad_left, pad_right, borderMode, borderValue);
+    copyMakeBorder(dst, dst_padded, pad_top, pad_bot, pad_left, pad_right,
+                   borderMode, borderValue);
 
     // transform src into larger window
     int dst_pad_h = dst_padded.rows;
     int dst_pad_w = dst_padded.cols;
-    warpPerspective(src, src_warped, transf, Size (dst_pad_w, dst_pad_h), flags, borderMode, borderValue);
+    warpPerspective(src, src_warped, transf, Size (dst_pad_w, dst_pad_h),
+                    flags, borderMode, borderValue);
 }
 
 void warpAffinePadded(
     const Mat& src, const Mat& dst, const Mat& M, // input matrices
     Mat& src_warped, Mat& dst_padded, // output matrices
-    int flags, const int borderMode, const Scalar& borderValue) // OpenCV params
+    int flags, int borderMode, const Scalar& borderValue) // OpenCV params
 {
 
     Mat transf(M); //copy M
@@ -116,7 +118,7 @@ void warpAffinePadded(
         max(transf_pts[0].y, transf_pts[1].y),
         max(transf_pts[2].y, transf_pts[3].y)));
 
-    // add translation to the transformation matrix to shift to positive values
+    // add translation to transformation matrix to shift to positive values
     int anchor_x = 0, anchor_y = 0;
     if (min_x < 0)
     {
@@ -136,10 +138,12 @@ void warpAffinePadded(
     int pad_bot = max(max_y, dst_h) - dst_h;
     int pad_left = anchor_x;
     int pad_right = max(max_x, dst_w) - dst_w;
-    copyMakeBorder(dst, dst_padded, pad_top, pad_bot, pad_left, pad_right, borderMode, borderValue);
+    copyMakeBorder(dst, dst_padded, pad_top, pad_bot, pad_left, pad_right,
+                   borderMode, borderValue);
 
     // transform src into larger window
     int dst_pad_h = dst_padded.rows;
     int dst_pad_w = dst_padded.cols;
-    warpAffine(src, src_warped, transf, Size (dst_pad_w, dst_pad_h), flags, borderMode, borderValue);
+    warpAffine(src, src_warped, transf, Size (dst_pad_w, dst_pad_h),
+               flags, borderMode, borderValue);
 }
