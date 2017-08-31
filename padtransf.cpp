@@ -6,7 +6,7 @@ using namespace std;
 void warpPerspectivePadded(
     const Mat& src, const Mat& dst, const Mat& M, // input matrices
     Mat& src_warped, Mat& dst_padded, // output matrices
-    int flags, const int borderMode, const Scalar& borderValue) // OpenCV params
+    int flags, int borderMode, const Scalar& borderValue) // OpenCV params
 {
     
     Mat transf = M/M.at<float>(2, 2); // ensure a legal homography
