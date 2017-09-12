@@ -3,9 +3,7 @@ Providing a padded version of OpenCV's `warpAffine()` and `warpPerspective()` fu
 
 ![Example image](example.png "Example output")
 
-A completed Python implementation is available [here](https://github.com/alkasm/padded-transformations).
-
-This C++ library is currently in active development and not fully working.
+A completed Python implementation is also available [here](https://github.com/alkasm/padded-transformations).
 
 ## functions
 
